@@ -19,6 +19,7 @@ const controls = [
 
 const buildControls = (props) => (
     <div className={classes.BuildControls}>
+        <p>Currunt Price: <strong>{props.price}</strong></p>
         {controls.map(control => {
             return <BuildControl 
                         key={control.label} 
