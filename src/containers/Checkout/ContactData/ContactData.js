@@ -9,11 +9,57 @@ import Button from '../../../components/Ui/Button/Button';
 
 class ContactData extends Component {
     state = {
-        name: '',
-        email: '',
-        address: {
-            street: '',
-            zipCode: ''
+        orderForm: {
+                name: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Input your name'
+                    },
+                    value: ''
+                },
+                street: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Input your street'
+                    },
+                    value: ''
+                },
+                zipCode: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Input your Zipcode'
+                    },
+                    value: ''
+                },
+                country: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Input your country'
+                    },
+                    value: ''
+                },
+                email: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'email',
+                        placeholder: 'Input your email'
+                    },
+                    value: ''
+                },
+                deliveryMethod: {
+                    elementType: 'select',
+                    elementConfig: {
+                        options: [
+                            {value: 'fasters', displayName: 'Faster'},
+                            {value: 'cheapest', displayName: 'Cheapest'}
+                        ]
+                    },
+                    value: ''
+                }
         },
         loading: false
     }
@@ -23,16 +69,7 @@ class ContactData extends Component {
         this.setState({loading:true})
         const order = {
             ingredients: this.props.ingredients,
-            price: this.props.price,
-            customer: {
-                name: 'schemr',
-                address: {
-                    street: 'Seoul',
-                    zipCode: '00000',
-                    contry: 'Korea'
-                }
-            },
-            deliveryMethod: 'faster'
+            price: this.props.price
         }
         axios.post('/orders.json', order)
         .then(response => {
@@ -46,14 +83,42 @@ class ContactData extends Component {
         });
     }
 
+    inputChangedHandler = (event, inputIdentifier) => {
+        const updatedOrderForm = {
+            ...this.state.orderForm
+        };
+        const updatedFormElement = {
+            ...updatedOrderForm[inputIdentifier]
+        };
+        updatedFormElement.value = event.target.value;
+        updatedOrderForm[inputIdentifier] = updatedFormElement
+
+        this.setState = {
+            orderForm: updatedOrderForm
+        }
+    }
+
     render() {
-        let form = (<form>
-            <Input inputtype="input" type="text" name="name" placeholder="name" />
-            <Input inputtype="input" type="email" name="email" placeholder="example@example.com" />
-            <Input inputtype="input" type="text" name="street" placeholder="street" />
-            <Input inputtype="input" type="text" name="zipcode" placeholder="zipcode" />
-            <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
-        </form>);
+        const formElementArray = [];
+        for (let key in this.state.orderForm) {
+            formElementArray.push({
+                id: key,
+                config: this.state.orderForm[key]
+            });
+        }
+        let form = (
+            <form>
+                {formElementArray.map(formElement => {
+                    return <Input 
+                        key={formElement.id}
+                        elementType={formElement.config.elementType} 
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.value}
+                        name="name" placeholder="name"
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)} />
+                })}
+                <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+            </form>);
         if (this.state.loading) {
             form = <Spinner />
         }
