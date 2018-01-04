@@ -87,7 +87,7 @@ class ContactData extends Component {
                             {value: 'cheapest', displayName: 'Cheapest'}
                         ]
                     },
-                    value: '',
+                    value: 'fasters',
                     validation: {},
                     valid: true
                 }
@@ -101,7 +101,7 @@ class ContactData extends Component {
         this.setState({loading:true});
         const formData = {};
         for(let fe in this.state.orderForm){
-            formData[fe] = this.state.orderForm[fe];
+            formData[fe] = this.state.orderForm[fe].value;
         }
         const order = {
             ingredients: this.props.ings,
