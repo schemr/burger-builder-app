@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 
 import reducer from './store/reducer';
 
@@ -10,7 +10,10 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-const store = createStore(reducer);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(reducer, composeEnhancers(
+    applyMiddleware()
+));
 
 const appRouter = (
     <Provider store={store}>
@@ -18,7 +21,7 @@ const appRouter = (
             <App />
         </BrowserRouter>
     </Provider>
-)
+);
 
 ReactDOM.render(appRouter, document.getElementById('root'));
 registerServiceWorker();
