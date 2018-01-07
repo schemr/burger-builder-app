@@ -3,7 +3,6 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
     ingredients: null,
     totalPrice: 3000,
-    loading: false,
     error: false
 };
 
@@ -43,8 +42,7 @@ const reducer = (state = initialState, action) => {
                     cheese: action.ingredients.cheese,
                     meat: action.ingredients.meat
                 },
-                error: false,
-                loading: true
+                error: false
             }
         case actionTypes.FETCH_INGREDIENTS_FAILED:
             return {
