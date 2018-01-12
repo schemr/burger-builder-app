@@ -8,8 +8,8 @@ import Input from '../../../components/Ui/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/index';
 
-
 import Button from '../../../components/Ui/Button/Button';
+import { updateObject } from '../../../shared/utillity';
 
 class ContactData extends Component {
     state = {
@@ -76,7 +76,8 @@ class ContactData extends Component {
                     },
                     value: '',
                     validation: {
-                        required: true
+                        required: true,
+                        isEmail: true
                     },
                     valid: false,
                     touched: false
@@ -133,16 +134,14 @@ class ContactData extends Component {
         return isValid;
     }
     inputChangedHandler = (event, inputIdentifier) => {
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        };
-        const updatedFormElement = {
-            ...updatedOrderForm[inputIdentifier]
-        };
-        updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        updatedOrderForm[inputIdentifier] = updatedFormElement
-        updatedFormElement.touched = true;
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: event.target.value,
+            valid: this.checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: true
+        });
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputIdentifier]: updatedFormElement
+        });
         
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
